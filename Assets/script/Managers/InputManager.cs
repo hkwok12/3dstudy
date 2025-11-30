@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InputManager
 {
@@ -12,6 +13,10 @@ public class InputManager
 
     public void OnUpdate()
     {
+        //UI버튼 클릭시 리턴
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         if (Input.anyKey && KetAction != null)
             KetAction.Invoke();
 
