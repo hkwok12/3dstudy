@@ -2,45 +2,50 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_Button : MonoBehaviour
-{
-    Dictionary<Type, UnityEngine.Object[]> _objects = new Dictionary<Type, UnityEngine.Object[]>();
-    enum Buttons
+public class UI_Button : UI_Base
+{ 
+    enum Buttons 
+    { 
+        PointButton 
+    } 
+    enum Texts 
+    { 
+        PointText, 
+        ScoreText 
+    } 
+
+    enum GameObjects
     {
-        PointButton
+        //TestObject
     }
 
-    enum Texts
+    enum Images
     {
-        PointText,
-        ScoreText
+        ItemIcon
     }
 
-    private void Start()
-    {
+    private void Start() 
+    { 
         Bind<Button>(typeof(Buttons));
         Bind<Text>(typeof(Texts));
-    }
+        Bind<GameObject>(typeof(GameObjects));
+        Bind<Image>(typeof(Images));
 
-    void Bind<T>(Type type) where T : UnityEngine.Object
+        GetText((int)Texts.ScoreText).text = "Bind Test";
+
+        GameObject go = GetImage((int)Images.ItemIcon).gameObject;
+        UI_EventHandler evt = go.GetComponent<UI_EventHandler>();
+        evt.OnDragHandler += ((PointerEventData data) => { evt.gameObject.transform.position = data.position; });
+            
+    } 
+
+    int _score = 0; 
+    public void OnButtonClicked() 
     {
-        string[] names = Enum.GetNames(type);
-        UnityEngine.Object[] objects = new UnityEngine.Object[names.Length];
-        _objects.Add(typeof(T), objects);
-
-        for (int i = 0; i < names.Length; i++)
-        {
-            objects[i] = Utill.FindChild<T>(gameObject, names[i], true);
-        }
-    }
-
-    int _score = 0;
-    public void OnButtonClicked()
-    {
-        Debug.Log("Button Clicked");
-
-        _score++;
-    }
+        Debug.Log("Button Clicked"); 
+        _score++; 
+    } 
 }
